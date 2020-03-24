@@ -13,7 +13,10 @@
 const uint16_t kRecvPin = 36;
 IRrecv irrecv(kRecvPin);
 decode_results results;
+
 unsigned long long int IRread;
+bool users[4];
+bool isAvail = false;
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
@@ -31,10 +34,32 @@ void UserMapping()
   }
 }
 
-bool isAvail = false;
 void askAvail()
 {
   digitalWrite(Ago, HIGH);
+}
+
+void stopAskAvail()
+{
+  digitalWrite(Ago, LOW);
+}
+
+void userIn(int user, int state)
+{
+  if(state == 0) {
+    //show not available
+    ;
+  }
+  else {
+    //send time and user ID to D
+    ;
+  }
+}
+
+void askOpenExit()
+{
+  ;
+  //digitalWrite(Ago2, HIGH);
 }
 
 void UserStateChange(int user)
@@ -45,14 +70,15 @@ void UserStateChange(int user)
     while(millis()-now<=100) {
       ;
     }
-    
+    stopAskAvail();
+
     if(isAvail) {
       isAvail = false;
-      Userin(user, 1);
+      userIn(user, 1);
       users[user] = 1;
     }
     else {
-      Userin(user, 0);
+      userIn(user, 0);
     }
   }
   else {
@@ -84,11 +110,10 @@ void setup() {
 }
 
 void loop() {
-  showText("Welcome", 24, 30);
   if (irrecv.decode(&results)) {
     IRread = results.value;
     irrecv.resume();  // Receive the next value
   }
   delay(100);
-  
+  UserMapping(IRread);
 }
