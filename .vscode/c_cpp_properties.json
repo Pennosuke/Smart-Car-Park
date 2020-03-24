@@ -5,7 +5,8 @@
             "includePath": [
                 "/home/hamuroos/.arduino15/packages/esp32/tools/**",
                 "/home/hamuroos/.arduino15/packages/esp32/hardware/esp32/1.0.4/**",
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/home/hamuroos/.arduino15/packages/esp32/hardware/esp32/1.0.4/libraries/Wire/src"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
