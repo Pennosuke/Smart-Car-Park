@@ -1,7 +1,7 @@
-//Hardware : ESP32 WROOM32
-//Platform : Thonny
-//Language : Python
-//Note : If there are any errors happened to i2c between Board A and Board B, just boot the file from Mbed to board A and rerun code from board B again.
+#Hardware : ESP32 WROOM32
+#Platform : Thonny
+#Language : Python
+#Note : If there are any errors happened to i2c between Board A and Board B, just boot the file from Mbed to board A and rerun code from board B again.
 import time
 from machine import Pin, I2C
 from ssd1306 import SSD1306_I2C
