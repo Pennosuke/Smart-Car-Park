@@ -1,4 +1,4 @@
-//Hardware : STM32 Nucleo32 with C language
+//Hardware : STM32 Nucleo32
 //Platform : Mbed
 //Language : C
 //Note : 1. If there are any errors happened to i2c between Board A and Board B, just boot the file from Mbed to board A and rerun code from board B again.
