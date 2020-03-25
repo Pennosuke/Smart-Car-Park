@@ -72,7 +72,7 @@ void userIn(int user, int state)
 void askOpenExit()
 {
   Serial.println("Bye jya");
-  //digitalWrite(Ago2, HIGH);
+  digitalWrite(Ago2, HIGH);
 }
 
 void UserStateChange(int user)
@@ -135,6 +135,6 @@ void loop() {
     IRread = results.value;
     irrecv.resume();  // Receive the next value
   }
-  delay(100);
   UserMapping();
+  delay(100);
 }
