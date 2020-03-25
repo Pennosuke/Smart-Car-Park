@@ -17,15 +17,21 @@
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
-#define SSID "minions"
-#define PASSWORD "hahahahahamama"
+#define SSID "Xperia XZs_a688"
+#define PASSWORD "TonOkung1234"
 
 #define FIREBASE_HOST "https://not-a-smart-car-park.firebaseio.com/"
 #define FIREBASE_AUTH "7YTYpvvz4S3yxcifVJgCpRTVXRZNllqYcpILq8u9"
 
-#define Ago 23
-#define Ago2 22
+#define Ago 15
+#define Ago2 2
 #define Ain 39
+
+//Mockup
+#define sw 13
+#define sw 12
+#define sw 14
+
 
 FirebaseData firebaseData;
 
@@ -42,17 +48,32 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 void UserMapping()      //Edit HEX by IR code you pre-read
 {                       //This function is to map IR read from receiver into User ID
-  if(IRread == 0x86C6807F) {
+  /*
+  if(IRread == 0x720009C) {
     UserStateChange(0);
   }
-  else if(IRread == 0x4567) {
+  else if(IRread == 0x720001C) {
     UserStateChange(1);
   }
-  else if(IRread == 0x1357) {
+  else if(IRread == 0xA9AEDCD9) {
     UserStateChange(2);
   }
-
   IRread = 0;           //Clear IRread to prevent infinite function calling
+  */
+
+  //Mockup
+  if(digitalRead(sw1) == HIGH)
+  {
+    UserStateChange(0);
+  }
+  else if(digitalRead(sw2) == HIGH)
+  {
+    UserStateChange(1);
+  }
+  else if(digitalRead(sw3) == HIGH)
+  {
+    UserStateChange(2);
+  }
 }
 
 void Arespond()         //Interrupt from A
@@ -143,6 +164,9 @@ void setup() {
   pinMode(Ago, OUTPUT);
   pinMode(Ago2, OUTPUT);
   pinMode(Ain, INPUT);
+  pinMode(sw1, INPUT);
+  pinMode(sw2, INPUT);
+  pinMode(sw3, INPUT);
   attachInterrupt(digitalPinToInterrupt(Ain), Arespond, RISING);
 
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
@@ -159,12 +183,14 @@ void setup() {
         delay(500);
         Serial.println("Try to connect Wifi");
     }
-
+  digitalWrite(Ago, LOW);
+  digitalWrite(Ago2, HIGH);
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
 void loop() {
   if (irrecv.decode(&results)) {
+    Serial.println(resultToSourceCode(&results));
     IRread = results.value;
     irrecv.resume();
   }
