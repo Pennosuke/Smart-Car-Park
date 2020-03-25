@@ -20,7 +20,7 @@ void time_reduce()
 {
   int user, time;
   Firebase.getInt(firebaseData, "/reduce/user");
-  if(firebaseData.intData == -1) {
+  if(firebaseData.intData() == -1) {
     return;
   }
   user = firebaseData.intData();
@@ -36,7 +36,7 @@ void time_reduce()
 void calculateFee(int user, double time_Out)
 {
   int parking_fee = 20;
-  Firebase.getDouble(firebaseData, "/" + String(user) + "Timestamp_In");
+  Firebase.getDouble(firebaseData, "/" + String(user) + "/Timestamp_In");
   double time_In = firebaseData.doubleData();
   double totaltime = time_Out - time_In;
   totaltime -= users[user];
@@ -44,8 +44,8 @@ void calculateFee(int user, double time_Out)
   if(totaltime <0) totaltime = 0;
   double fee = totaltime*parking_fee;
   Firebase.setDouble(firebaseData, "/fee", fee);
-  Firebase.setDouble(firebaseData, "/" + String(user) + "Timestamp_In", -1);
-  Firebase.setDouble(firebaseData, "/" + String(user) + "Timestamp_Out", -1);
+  Firebase.setDouble(firebaseData, "/" + String(user) + "/Timestamp_In", -1);
+  Firebase.setDouble(firebaseData, "/" + String(user) + "/Timestamp_Out", -1);
 }
 
 void setup() {
@@ -66,8 +66,10 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+
   for(int i=0 ;i<2 ;i++) {
-    if(Firebase.getdouble(firebaseData, "/" + String(i) + "/Timestamp_Out") {
+    Firebase.getDouble(firebaseData, "/" + String(i) + "/Timestamp_Out");
+    if(firebaseData.doubleData() != -1) {
       calculateFee(i, firebaseData.doubleData());
     }
   }
