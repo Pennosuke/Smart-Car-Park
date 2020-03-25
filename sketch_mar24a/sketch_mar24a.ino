@@ -40,10 +40,9 @@ bool isAvail = false;
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
-void UserMapping()
-{
+void UserMapping()      //Edit HEX by IR code you pre-read
+{                       //This function is to map IR read from receiver into User ID
   if(IRread == 0x86C6807F) {
-    Serial.println("Hi User #0");
     UserStateChange(0);
   }
   else if(IRread == 0x4567) {
@@ -53,33 +52,33 @@ void UserMapping()
     UserStateChange(2);
   }
 
-  IRread = 0;
+  IRread = 0;           //Clear IRread to prevent infinite function calling
 }
 
-void Arespond()
+void Arespond()         //Interrupt from A
 {
   isAvail = true;
-  stopAskAvail();
+  stopAskAvail();       //Got available and stop
 }
 
-void askAvail()
+void askAvail()         //Interrupt to A for available parking lot
 {
   digitalWrite(Ago, HIGH);
 }
 
-void stopAskAvail()
+void stopAskAvail()     //Stop Interrupt to A
 {
   digitalWrite(Ago, LOW);
 }
 
-void userIn(int user, int state)
+void userIn(int user, int state)      //state is status of parking lot || 0 means full || 1 means available
 {
   if(state == 0) {
     //show not available
     Serial.println("Lot full naja TwT");
   }
   else {
-    //send time and user ID to D
+    //send time in and user ID to Database
     Serial.println("Get in loei jaaa");
     Firebase.setTimestamp(firebaseData, "/" +String(user) +"/Timestamp_In");
   }
@@ -87,11 +86,13 @@ void userIn(int user, int state)
 
 void askOpenExit(int user)
 {
+  //send time out and user ID to Database
   Firebase.setTimestamp(firebaseData, "/" +String(user) +"/Timestamp_Out");
   while(Firebase.getInt(firebaseData, "/fee") == -1) {
     ;
   }
   int fee = firebaseData.intData();
+  Firebase.setInt(firebaseData, "/fee", -1);
   //show parking fee to OLED
   while(1) {  //wait for user to pay
     break;
@@ -101,17 +102,17 @@ void askOpenExit(int user)
 
 void UserStateChange(int user)
 {
-  if(users[user] == 0) {
-    askAvail();
+  if(users[user] == 0) {          //users[user] is to check if this user ID coming or going || 0 means coming
+    askAvail();                   //Ask if it is available lot
     unsigned long now = millis();
-    while(millis()-now<=100 && isAvail==false) {
+    while(millis()-now<=100 && isAvail==false) {      //Wait for answer for 3 sec
       ;
     }
-    if(isAvail == false) {
+    if(isAvail == false) {        //Stop asking since timed out
       stopAskAvail();
     }
 
-    if(isAvail) {
+    if(isAvail) {                 //If is it available lot
       isAvail = false;
       userIn(user, 1);
       users[user] = 1;
@@ -120,7 +121,7 @@ void UserStateChange(int user)
       userIn(user, 0);
     }
   }
-  else {
+  else {                          //User going out
     askOpenExit(user);
     users[user] = 0;
   }
@@ -135,9 +136,9 @@ void showText(char str[], int horz, int vert)
 }
 
 void setup() {
-  Serial.begin(115200);
 
-   WiFi.begin(SSID, PASSWORD);
+  Serial.begin(115200);
+  WiFi.begin(SSID, PASSWORD);
 
   pinMode(Ago, OUTPUT);
   pinMode(Ago2, OUTPUT);
@@ -158,14 +159,15 @@ void setup() {
         delay(500);
         Serial.println("Try to connect Wifi");
     }
+
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
 void loop() {
   if (irrecv.decode(&results)) {
     IRread = results.value;
-    irrecv.resume();  // Receive the next value
+    irrecv.resume();
   }
-  UserMapping();
+  UserMapping();    //Since IRread is unsigned long, Mapping should help us handle this easier
   delay(100);
 }
