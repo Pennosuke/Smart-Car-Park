@@ -1,6 +1,6 @@
 {
     "board": "esp32:esp32:nodemcu-32s",
     "configuration": "FlashFreq=80,UploadSpeed=921600",
-    "sketch": "/sketch_mar24a.ino",
+    "sketch": "sketch_mar24a/sketch_mar24a.ino",
     "port": "/dev/ttyUSB0"
 }

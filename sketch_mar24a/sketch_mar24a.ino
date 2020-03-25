@@ -2,17 +2,32 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+#include <FirebaseESP32.h>
+#include <FirebaseESP32HTTPClient.h>
+#include <FirebaseJson.h>
+#include <jsmn.h>
 
-#define Ago 23
-#define Ago2 22
-#define Ain 39
+#include <WiFi.h>
 
 #include <Arduino.h>
 #include <IRremoteESP8266.h>
 #include <IRrecv.h>
 #include <IRutils.h>
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+#define SSID "minions"
+#define PASSWORD "hahahahahamama"
+
+#define FIREBASE_HOST "https://not-a-smart-car-park.firebaseio.com/"
+#define FIREBASE_AUTH "7YTYpvvz4S3yxcifVJgCpRTVXRZNllqYcpILq8u9"
+
+#define Ago 23
+#define Ago2 22
+#define Ain 39
+
+FirebaseData firebaseData;
 
 const uint16_t kRecvPin = 36;
 IRrecv irrecv(kRecvPin);
@@ -66,12 +81,21 @@ void userIn(int user, int state)
   else {
     //send time and user ID to D
     Serial.println("Get in loei jaaa");
+    Firebase.setTimestamp(firebaseData, "/" +String(user) +"/Timestamp_In");
   }
 }
 
-void askOpenExit()
+void askOpenExit(int user)
 {
-  Serial.println("Bye jya");
+  Firebase.setTimestamp(firebaseData, "/" +String(user) +"/Timestamp_Out");
+  while(Firebase.getInt(firebaseData, "/fee") == -1) {
+    ;
+  }
+  int fee = firebaseData.intData();
+  //show parking fee to OLED
+  while(1) {  //wait for user to pay
+    break;
+  }
   digitalWrite(Ago2, HIGH);
 }
 
@@ -97,7 +121,7 @@ void UserStateChange(int user)
     }
   }
   else {
-    askOpenExit();
+    askOpenExit(user);
     users[user] = 0;
   }
 }
@@ -113,6 +137,8 @@ void showText(char str[], int horz, int vert)
 void setup() {
   Serial.begin(115200);
 
+   WiFi.begin(SSID, PASSWORD);
+
   pinMode(Ago, OUTPUT);
   pinMode(Ago2, OUTPUT);
   pinMode(Ain, INPUT);
@@ -126,8 +152,13 @@ void setup() {
   display.setTextSize(1);
   display.setTextColor(WHITE);
 
-  irrecv.enableIRIn(); 
+  irrecv.enableIRIn();
 
+  while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.println("Try to connect Wifi");
+    }
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
 void loop() {
