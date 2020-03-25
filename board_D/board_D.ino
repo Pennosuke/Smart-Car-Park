@@ -40,6 +40,7 @@ void calculateFee(int user, double time_Out)
   double time_In = firebaseData.doubleData();
   double totaltime = time_Out - time_In;
   totaltime -= users[user];
+  users[user] = 0;
   if(totaltime <0) totaltime = 0;
   double fee = totaltime*parking_fee;
   Firebase.setDouble(firebaseData, "/fee", fee);
