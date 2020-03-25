@@ -66,17 +66,6 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Firebase.getDouble(firebaseData, "Set/Timestamp");
-  double first = firebaseData.doubleData();
-  Serial.print("First : ");
-  printf("%.0lf\n", first);
-  delay(2000);
-  Firebase.getDouble(firebaseData, "Set/Timestamp");
-  double second = firebaseData.doubleData();
-
-  Serial.print("Second : ");
-  Serial.println(second);
-
   for(int i=0 ;i<2 ;i++) {
     if(Firebase.getdouble(firebaseData, "/" + String(i) + "/Timestamp_Out") {
       calculateFee(i, firebaseData.doubleData());

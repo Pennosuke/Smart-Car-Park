@@ -152,7 +152,7 @@ void setup() {
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(WHITE);
-
+  showText("Test", 30, 30);
   irrecv.enableIRIn();
 
   while (WiFi.status() != WL_CONNECTED) {
