@@ -67,7 +67,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-  for(int i=0 ;i<2 ;i++) {
+  for(int i=0 ;i<=2 ;i++) {
     Firebase.getDouble(firebaseData, "/" + String(i) + "/Timestamp_Out");
     if(firebaseData.doubleData() != -1) {
       calculateFee(i, firebaseData.doubleData());
