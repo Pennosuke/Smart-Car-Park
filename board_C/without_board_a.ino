@@ -41,8 +41,10 @@ int lotnum = 2;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 void lotmock()
 {
-  if(lotnum > 0) isAvail = true;
+  if(lotnum > 0){
+  isAvail = true;
   lotnum--;
+  }
 }
 void UserMapping()      //Edit HEX by IR code you pre-read
 {                       //This function is to map IR read from receiver into User ID
