@@ -103,7 +103,9 @@ void askOpenExit(int user)
   while(Firebase.getInt(firebaseData, "/fee") == -1) {
     ;
   }
+  char cfee[10];
   int fee = firebaseData.intData();
+  itoa(fee, cfee, 10);            //convert int into char array and store in cfee
   Firebase.setInt(firebaseData, "/fee", -1);
   //show parking fee to OLED
   
