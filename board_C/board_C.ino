@@ -17,15 +17,21 @@
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
-#define SSID "minions"
-#define PASSWORD "hahahahahamama"
+#define SSID "HCSloth"
+#define PASSWORD "liubei161"
 
 #define FIREBASE_HOST "https://not-a-smart-car-park.firebaseio.com/"
 #define FIREBASE_AUTH "7YTYpvvz4S3yxcifVJgCpRTVXRZNllqYcpILq8u9"
 
-#define Ago 23
-#define Ago2 22
+#define Ago 15
+#define Ago2 2
 #define Ain 39
+
+//Mockup
+//#define sw1 13
+//#define sw2 12
+//#define sw3 14
+
 
 FirebaseData firebaseData;
 
@@ -42,16 +48,22 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 void UserMapping()      //Edit HEX by IR code you pre-read
 {                       //This function is to map IR read from receiver into User ID
-  if(IRread == 0x86C6807F) {
+  if(IRread == 0xDF40BF) {
+    showText("ID 0 detected",0,0);
     UserStateChange(0);
   }
-  else if(IRread == 0x4567) {
+  else if(IRread == 0xDF50AF) {
+    showText("ID 1 detected",0,0);
     UserStateChange(1);
   }
-  else if(IRread == 0x1357) {
+  else if(IRread == 0xDF609F) {
+    showText("ID 2 detected",0,0);
     UserStateChange(2);
   }
-
+  else
+  {
+    showText("Unknown detected",30,30);
+  }
   IRread = 0;           //Clear IRread to prevent infinite function calling
 }
 
@@ -94,10 +106,13 @@ void askOpenExit(int user)
   int fee = firebaseData.intData();
   Firebase.setInt(firebaseData, "/fee", -1);
   //show parking fee to OLED
+  
   while(1) {  //wait for user to pay
     break;
   }
   digitalWrite(Ago2, HIGH);
+  delay(3000);
+  digitalWrite(Ago2, LOW);
 }
 
 void UserStateChange(int user)
@@ -113,6 +128,8 @@ void UserStateChange(int user)
     }
 
     if(isAvail) {                 //If is it available lot
+      delay(3000);
+      stopAskAvail();
       isAvail = false;
       userIn(user, 1);
       users[user] = 1;
@@ -130,6 +147,7 @@ void UserStateChange(int user)
 void showText(char str[], int horz, int vert)
 {
   display.clearDisplay();
+  display.clearDisplay();
   display.setCursor(horz,vert);     
   display.println(str);
   display.display(); 
@@ -143,7 +161,10 @@ void setup() {
   pinMode(Ago, OUTPUT);
   pinMode(Ago2, OUTPUT);
   pinMode(Ain, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Ain), Arespond, RISING);
+  //pinMode(sw1, INPUT);
+  //pinMode(sw2, INPUT);
+  //pinMode(sw3, INPUT);
+  attachInterrupt(digitalPinToInterrupt(Ain), Arespond, HIGH);
 
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
     Serial.println(F("SSD1306 allocation failed"));
@@ -159,12 +180,14 @@ void setup() {
         delay(500);
         Serial.println("Try to connect Wifi");
     }
-
+  digitalWrite(Ago, LOW);
+  digitalWrite(Ago2, LOW);
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
 void loop() {
   if (irrecv.decode(&results)) {
+    Serial.println(resultToSourceCode(&results));
     IRread = results.value;
     irrecv.resume();
   }
