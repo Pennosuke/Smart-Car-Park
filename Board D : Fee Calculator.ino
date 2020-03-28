@@ -6,8 +6,8 @@
 
 FirebaseData firebaseData;
 
-#define SSID "minions"
-#define PASSWORD "hahahahahamama"
+#define SSID "________"
+#define PASSWORD "________"
 
 #define FIREBASE_HOST "https://not-a-smart-car-park.firebaseio.com/"
 #define FIREBASE_AUTH "7YTYpvvz4S3yxcifVJgCpRTVXRZNllqYcpILq8u9"
