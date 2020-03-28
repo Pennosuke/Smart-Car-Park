@@ -15,6 +15,8 @@ print("Scanning I2C bus... found",i2c.scan())
 time.sleep(0.5)
 print("Send data to STM32...")
 while True:
+    #print(button1.value())
+    #print(button2.value())
     red1.value(not button1.value())
     green1.value(button1.value())
     red2.value(not button2.value())
@@ -28,4 +30,5 @@ while True:
     else:
         oled.text("FULL",8,24)
     oled.show()
+    i2c.writeto(0x50,bytearray([total]))
     time.sleep(0.1)
