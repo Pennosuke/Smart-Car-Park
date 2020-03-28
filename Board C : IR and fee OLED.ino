@@ -17,8 +17,8 @@
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
-#define SSID "Xperia XZs_a688"
-#define PASSWORD "TonOkung1234"
+#define SSID "Xperia XZs_a688" // Put your current Wifi SSID Here
+#define PASSWORD "TonOkung1234" // Put your current Wifi password Here
 
 #define FIREBASE_HOST "https://not-a-smart-car-park.firebaseio.com/"
 #define FIREBASE_AUTH "7YTYpvvz4S3yxcifVJgCpRTVXRZNllqYcpILq8u9"
@@ -26,12 +26,6 @@
 #define Ago 15
 #define Ago2 2
 #define Ain 39
-
-//Mockup
-//#define sw1 13
-//#define sw2 12
-//#define sw3 14
-
 
 FirebaseData firebaseData;
 
