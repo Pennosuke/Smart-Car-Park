@@ -5,6 +5,8 @@
 
 Servo servo1(D6);
 Servo servo2(D9);
+
+I2CSlave slave(D4,D5);
 DigitalOut led3(PB_3);
 DigitalIn InDectected(A7);
 DigitalIn OutDectected(A6);
@@ -65,6 +67,17 @@ int main(void) {
     thr_queue.start(callback(&queue,&EventQueue::dispatch_forever));
     while(1)
     {
+        int i = slave.receive();
+        for(int i = 0; i < sizeof(buf); i++) buf[i] = 0; // Clear buffer
+        switch (i) {
+            case I2CSlave::ReadAddressed:
+                break;
+            case I2CSlave::WriteAddressed:
+                slave.read(buf,1);
+                printf("Read: %s\n", buf);
+                temp = buf[0];
+                break;
+        }
         if(InDectected == 0)
         {
             queue.call(sw1_closed);
@@ -81,7 +94,6 @@ int main(void) {
         {
             queue.call(sw2_opened);
         }
-        temp = park1 + park2;
         if(temp > 0)
         {
             CarParkStatus = 1;
