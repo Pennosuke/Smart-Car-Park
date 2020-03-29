@@ -35,14 +35,14 @@ void time_reduce()
 
 void calculateFee(int user, double time_Out)
 {
-  int parking_fee = 20;
+  double parking_fee = 0.00045;
   Firebase.getDouble(firebaseData, "/" + String(user) + "/Timestamp_In");
   double time_In = firebaseData.doubleData();
   double totaltime = time_Out - time_In;
   totaltime -= users[user];
   users[user] = 0;
   if(totaltime <0) totaltime = 0;
-  double fee = totaltime*parking_fee;
+  double fee = totaltime*parking_fee*2.5;
   Firebase.setDouble(firebaseData, "/fee", fee);
   Firebase.setDouble(firebaseData, "/" + String(user) + "/Timestamp_In", -1);
   Firebase.setDouble(firebaseData, "/" + String(user) + "/Timestamp_Out", -1);
